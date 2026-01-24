@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalPulse - Personal Goal & Streak Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🎯</span>
+                    <h1>GoalPulse</h1>
+                </div>
+                <div class="header-controls">
+                    <div class="date-display">
+                        <span id="currentDate"></span>
+                    </div>
+                    <div class="streak-info">
+                        <span class="streak-freeze-count">❄️ <span id="freezeCount">3</span></span>
+                        <button class="freeze-btn-small" id="useFreezeBtn" onclick="goalPulse.useStreakFreeze()" title="Use Streak Freeze">
+                            Use Freeze
+                        </button>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" id="exportBtn" onclick="goalPulse.exportData()" title="Export Data">
+                            📊
+                        </button>
+                        <button class="control-btn" id="soundToggle" onclick="goalPulse.toggleSound()" title="Toggle Sound">
+                            🔊
+                        </button>
+                        <button class="control-btn" id="themeToggle" onclick="goalPulse.toggleTheme()" title="Toggle Theme">
+                            🌙
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="motivation-quote">
+                <p id="motivationText">"Success is the sum of small efforts repeated day in and day out."</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard">
+        <div class="container">
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <h3 id="totalGoals">0</h3>
+                            <p>Active Goals</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <h3 id="bestStreak">0</h3>
+                            <p>Best Streak</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <h3 id="consistencyRate">0%</h3>
+                            <p>Consistency</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-content">
+                            <h3 id="badgeCount">0</h3>
+                            <p>Badges Earned</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Consistency Heatmap -->
+            <section class="consistency-heatmap">
+                <h3>🔥 Consistency Heatmap</h3>
+                <div class="heatmap-stats">
+                    <span id="totalActivities">0 activities in the last year</span>
+                    <span>Active days: <strong id="activeDaysCount">0</strong></span>
+                    <span>Current streak: <strong id="currentStreakCount">0</strong></span>
+                </div>
+                <div class="heatmap-wrapper">
+                    <div class="heatmap-container" id="heatmapContainer">
+                        <!-- Heatmap will be generated here -->
+                    </div>
+                </div>
+                <div class="heatmap-legend">
+                    <span>Less</span>
+                    <div class="heatmap-legend-item" style="background: var(--background-color)"></div>
+                    <div class="heatmap-legend-item" style="background: rgba(34, 197, 94, 0.2)"></div>
+                    <div class="heatmap-legend-item" style="background: rgba(34, 197, 94, 0.4)"></div>
+                    <div class="heatmap-legend-item" style="background: rgba(34, 197, 94, 0.6)"></div>
+                    <div class="heatmap-legend-item" style="background: rgba(34, 197, 94, 0.8)"></div>
+                    <div class="heatmap-legend-item" style="background: rgb(14, 255, 102)"></div>
+                    <span>More</span>
+                </div>
+            </section>
+
+            <!-- Goals Section -->
+            <section class="goals-section">
+                <div class="section-header">
+                    <h2>My Goals</h2>
+                    <div class="goals-controls">
+                        <div class="search-filter-container">
+                            <div class="search-box">
+                                <input type="text" id="goalSearch" placeholder="🔍 Search goals..." />
+                                <button class="search-clear-btn" id="clearSearch" style="display: none;">✕</button>
+                            </div>
+                            <div class="filter-controls">
+                                <select id="categoryFilter" class="filter-select">
+                                    <option value="">All Categories</option>
+                                    <option value="Study">📚 Study</option>
+                                    <option value="Fitness">💪 Fitness</option>
+                                    <option value="Coding">💻 Coding</option>
+                                    <option value="Personal">🌱 Personal</option>
+                                    <option value="Work">💼 Work</option>
+                                    <option value="Health">🏥 Health</option>
+                                    <option value="Finance">💰 Finance</option>
+                                    <option value="Learning">🎓 Learning</option>
+                                    <option value="Custom">✨ Custom</option>
+                                </select>
+                                <select id="priorityFilter" class="filter-select">
+                                    <option value="">All Priorities</option>
+                                    <option value="High">🔴 High Priority</option>
+                                    <option value="Medium">🟡 Medium Priority</option>
+                                    <option value="Low">🟢 Low Priority</option>
+                                </select>
+                                <select id="statusFilter" class="filter-select">
+                                    <option value="">All Status</option>
+                                    <option value="completed">✅ Completed Today</option>
+                                    <option value="pending">⏳ Pending Today</option>
+                                    <option value="streak">🔥 Active Streak</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="addGoalBtn">
+                            ➕ Add Goal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Add Goal Modal -->
+                <div class="modal" id="addGoalModal">
+                    <div class="modal-content">
+                        <h3>Add New Goal</h3>
+                        <form id="goalForm">
+                            <div class="form-group">
+                                <label for="goalTitle">Goal Title *</label>
+                                <input type="text" id="goalTitle" required placeholder="e.g., Daily Coding">
+                            </div>
+                            <div class="form-group">
+                                <label for="goalCategory">Category</label>
+                                <select id="goalCategory">
+                                    <option value="Study">📚 Study</option>
+                                    <option value="Fitness">💪 Fitness</option>
+                                    <option value="Coding">💻 Coding</option>
+                                    <option value="Personal">🌱 Personal</option>
+                                    <option value="Work">💼 Work</option>
+                                    <option value="Health">🏥 Health</option>
+                                    <option value="Finance">💰 Finance</option>
+                                    <option value="Learning">🎓 Learning</option>
+                                    <option value="Custom">✨ Custom</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="goalPriority">Priority</label>
+                                <select id="goalPriority">
+                                    <option value="High">🔴 High Priority</option>
+                                    <option value="Medium" selected>🟡 Medium Priority</option>
+                                    <option value="Low">🟢 Low Priority</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input type="date" id="startDate">
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" id="cancelGoalBtn">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Goal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Goals List -->
+                <div class="goals-list" id="goalsList">
+                    <!-- Goals will be dynamically added here -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">🎯</div>
+                    <h3>No goals yet!</h3>
+                    <p>Start your journey by adding your first goal.</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('addGoalBtn').click()">
+                        Add Your First Goal
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quick Stats Widget -->
+            <section class="quick-stats-section">
+                <h2>📊 Quick Stats & Insights</h2>
+                <div class="quick-stats-grid">
+                    <div class="stat-widget">
+                        <div class="widget-header">
+                            <span class="widget-icon">🎯</span>
+                            <h4>Today's Progress</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="progress-ring">
+                                <svg width="60" height="60">
+                                    <circle cx="30" cy="30" r="25" fill="none" stroke="var(--surface-light)" stroke-width="5"/>
+                                    <circle id="todayProgressRing" cx="30" cy="30" r="25" fill="none" stroke="var(--neon-success)" stroke-width="5"
+                                            stroke-dasharray="157" stroke-dashoffset="157" stroke-linecap="round"
+                                            transform="rotate(-90 30 30)"/>
+                                </svg>
+                                <div class="progress-text">
+                                    <span id="todayProgressPercent">0%</span>
+                                </div>
+                            </div>
+                            <p id="todayProgressText">0 of 0 goals completed</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-widget">
+                        <div class="widget-header">
+                            <span class="widget-icon">🔥</span>
+                            <h4>Weekly Performance</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="weekly-bars">
+                                <div class="day-bar" data-day="Mon">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">M</span>
+                                </div>
+                                <div class="day-bar" data-day="Tue">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">T</span>
+                                </div>
+                                <div class="day-bar" data-day="Wed">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">W</span>
+                                </div>
+                                <div class="day-bar" data-day="Thu">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">T</span>
+                                </div>
+                                <div class="day-bar" data-day="Fri">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">F</span>
+                                </div>
+                                <div class="day-bar" data-day="Sat">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">S</span>
+                                </div>
+                                <div class="day-bar" data-day="Sun">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                    <span class="bar-label">S</span>
+                                </div>
+                            </div>
+                            <p id="weeklyAvgText">Average: 0% completion</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-widget">
+                        <div class="widget-header">
+                            <span class="widget-icon">📈</span>
+                            <h4>Category Breakdown</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="category-stats" id="categoryStats">
+                                <!-- Category stats will be generated here -->
+                            </div>
+                            <p id="categoryTotalText">0 total activities</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-widget">
+                        <div class="widget-header">
+                            <span class="widget-icon">⏰</span>
+                            <h4>Recent Activity</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="activity-timeline" id="activityTimeline">
+                                <!-- Activity timeline will be generated here -->
+                            </div>
+                            <p id="activitySummary">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="analytics-section">
+                <h2>Analytics & Progress</h2>
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <h3>Completion Overview</h3>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>7-Day Consistency</h3>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Badges Section -->
+            <section class="badges-section">
+                <h2>Badges & Achievements</h2>
+                <div class="badges-grid" id="badgesGrid">
+                    <div class="badge-card locked" data-badge="7-day">
+                        <div class="badge-icon">🌱</div>
+                        <h4>7-Day Consistency</h4>
+                        <p>Complete any goal for 7 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/7 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="14-day">
+                        <div class="badge-icon">🚀</div>
+                        <h4>14-Day Warrior</h4>
+                        <p>Complete any goal for 14 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/14 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="30-day">
+                        <div class="badge-icon">⚡</div>
+                        <h4>30-Day Legend</h4>
+                        <p>Complete any goal for 30 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/30 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="60-day">
+                        <div class="badge-icon">💎</div>
+                        <h4>60-Day Master</h4>
+                        <p>Complete any goal for 60 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/60 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="90-day">
+                        <div class="badge-icon">🔥</div>
+                        <h4>90-Day Elite</h4>
+                        <p>Complete any goal for 90 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/90 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="180-day">
+                        <div class="badge-icon">🏆</div>
+                        <h4>180-Day Champion</h4>
+                        <p>Complete any goal for 180 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/180 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="365-day">
+                        <div class="badge-icon">👑</div>
+                        <h4>365-Day God Mode</h4>
+                        <p>Complete any goal for 365 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/365 days</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked" data-badge="1000-day">
+                        <div class="badge-icon">🌟</div>
+                        <h4>1000-Day Immortal</h4>
+                        <p>Complete any goal for 1000 consecutive days</p>
+                        <div class="badge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/1000 days</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🎯 GoalPulse</h3>
+                    <p>Your personal goal and streak tracker for building consistent habits and achieving your dreams.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#goals">My Goals</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                        <li><a href="#badges">Badges</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Motivation</h4>
+                    <p>"Success is the sum of small efforts repeated day in and day out."</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 GoalPulse. Built with passion for consistency and growth. 🚀</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

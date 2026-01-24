@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset App Data</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #0F172A; color: white; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .btn { padding: 1rem 2rem; background: #EF4444; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 1rem; }
+        .btn:hover { background: #DC2626; }
+        .success { background: #22C55E; padding: 1rem; border-radius: 8px; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔄 Reset GoalPulse App</h2>
+        <p>This will reset everything back to original state:</p>
+        <ul>
+            <li>❌ All goals deleted</li>
+            <li>❌ All streak data cleared</li>
+            <li>❌ All badges locked again</li>
+            <li>❌ Progress reset to 0/7 days</li>
+        </ul>
+        
+        <button class="btn" onclick="resetAll()">🔄 Reset Everything</button>
+        <button class="btn" onclick="goBack()">🏠 Go to Main App</button>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        function resetAll() {
+            localStorage.clear();
+            document.getElementById('result').innerHTML = `
+                <div class="success">
+                    <h3>✅ App Reset Complete!</h3>
+                    <p>All data has been cleared.</p>
+                    <p>App is back to original state.</p>
+                    <a href="index.html" style="color: white;">Go to Main App →</a>
+                </div>
+            `;
+        }
+        
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
