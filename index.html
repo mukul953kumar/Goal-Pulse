@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>GoalPulse - Personal Goal & Streak Tracker</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,8 +16,11 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <span class="logo-icon">🎯</span>
-                    <h1>GoalPulse Streak Tracker</h1>
+                    <span class="logo-icon"><img src="logo.png" alt="logo" style="width: 50px; height: 50px;"></span>
+                    <div>
+                        <h1>GoalPulse</h1>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;">Track your goals and don't break your streak</p>
+                    </div>
                 </div>
                 <div class="header-controls">
                     <div class="date-display">
@@ -30,15 +36,58 @@
                         <button class="control-btn" id="exportBtn" onclick="goalPulse.exportData()" title="Export Data">
                             📊
                         </button>
-                        <button class="control-btn" id="soundToggle" onclick="goalPulse.toggleSound()" title="Toggle Sound">
-                            🔊
+                        <button class="control-btn" id="addGoalBtn" onclick="goalPulse.showAddGoalModal()" title="Add Goal">
+                            ➕
                         </button>
-                        <button class="control-btn" id="themeToggle" onclick="goalPulse.toggleTheme()" title="Toggle Theme">
-                            🌙
+                        <button class="control-btn" id="calendarBtn" onclick="goalPulse.showCalendar()" title="Calendar View">
+                            📅
                         </button>
+                    </div>
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="goalPulse.toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="mobile-menu-content">
+                    <div class="mobile-menu-header">
+                        <span class="mobile-menu-date" id="mobileMenuDate"></span>
+                        <button class="mobile-menu-close" onclick="goalPulse.toggleMobileMenu()">✕</button>
+                    </div>
+                    <div class="mobile-menu-body">
+                        <div class="mobile-menu-section">
+                            <h4>Streak Info</h4>
+                            <div class="mobile-streak-info">
+                                <span class="streak-freeze-count">❄️ <span id="mobileFreezeCount">3</span></span>
+                                <button class="freeze-btn-small" onclick="goalPulse.useStreakFreeze()">
+                                    Use Freeze
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mobile-menu-section">
+                            <h4>Actions</h4>
+                            <div class="mobile-menu-actions">
+                                <button class="mobile-menu-btn" onclick="goalPulse.exportData()">
+                                    📊 Export Data
+                                </button>
+                                <button class="mobile-menu-btn" onclick="goalPulse.showAddGoalModal()">
+                                    ➕ Add Goal
+                                </button>
+                                <button class="mobile-menu-btn" onclick="goalPulse.showCalendar()">
+                                    📅 Calendar View
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            </div>
+            <!-- Mobile Menu Overlay -->
+            <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="goalPulse.closeMobileMenu()"></div>
             <div class="motivation-quote">
                 <p id="motivationText">"Success is the sum of small efforts repeated day in and day out."</p>
             </div>
@@ -52,28 +101,28 @@
             <section class="stats-section">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">📊</div>
+                        <div class="stat-icon"> </div>
                         <div class="stat-content">
                             <h3 id="totalGoals">0</h3>
                             <p>Active Goals</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🔥</div>
+                        <div class="stat-icon"></div>
                         <div class="stat-content">
                             <h3 id="bestStreak">0</h3>
                             <p>Best Streak</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📈</div>
+                        <div class="stat-icon"></div>
                         <div class="stat-content">
                             <h3 id="consistencyRate">0%</h3>
                             <p>Consistency</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🏆</div>
+                        <div class="stat-icon"></div>
                         <div class="stat-content">
                             <h3 id="badgeCount">0</h3>
                             <p>Badges Earned</p>
@@ -144,7 +193,7 @@
                                 </select>
                             </div>
                         </div>
-                        <button class="btn btn-primary" id="addGoalBtn">
+                        <button class="btn btn-primary" id="addGoalBtnMain">
                             ➕ Add Goal
                         </button>
                     </div>
@@ -203,7 +252,7 @@
                     <div class="empty-icon">🎯</div>
                     <h3>No goals yet!</h3>
                     <p>Start your journey by adding your first goal.</p>
-                    <button class="btn btn-primary" onclick="document.getElementById('addGoalBtn').click()">
+                    <button class="btn btn-primary" onclick="goalPulse.showAddGoalModal()">
                         Add Your First Goal
                     </button>
                 </div>

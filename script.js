@@ -1695,6 +1695,10 @@ class GoalPulse {
             this.showAddGoalModal();
         });
 
+        document.getElementById('addGoalBtnMain').addEventListener('click', () => {
+            this.showAddGoalModal();
+        });
+
         document.getElementById('cancelGoalBtn').addEventListener('click', () => {
             this.hideAddGoalModal();
         });
@@ -2584,6 +2588,93 @@ class GoalPulse {
         this.updateBadges();
         
         console.log('=== TEST COMPLETE ===');
+    }
+    
+    // Mobile Menu Functions
+    toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        
+        if (mobileMenu.classList.contains('active')) {
+            this.closeMobileMenu();
+        } else {
+            this.openMobileMenu();
+        }
+    }
+    
+    openMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuDate = document.getElementById('mobileMenuDate');
+        const mobileFreezeCount = document.getElementById('mobileFreezeCount');
+        
+        mobileMenu.classList.add('active');
+        mobileMenuToggle.classList.add('active');
+        
+        // Update mobile menu content
+        if (mobileMenuDate) {
+            mobileMenuDate.textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        if (mobileFreezeCount) {
+            mobileFreezeCount.textContent = this.streakFreezes;
+        }
+        
+        // Add overlay
+        this.addMobileMenuOverlay();
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+        
+        this.playSound('button');
+    }
+    
+    closeMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        
+        mobileMenu.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        
+        // Remove overlay
+        this.removeMobileMenuOverlay();
+        
+        // Restore body scroll
+        document.body.style.overflow = '';
+        
+        this.playSound('button');
+    }
+    
+    addMobileMenuOverlay() {
+        let overlay = document.getElementById('mobileMenuOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'mobileMenuOverlay';
+            overlay.className = 'mobile-menu-overlay';
+            overlay.onclick = () => this.closeMobileMenu();
+            document.body.appendChild(overlay);
+        }
+        
+        setTimeout(() => {
+            overlay.classList.add('active');
+        }, 10);
+    }
+    
+    removeMobileMenuOverlay() {
+        const overlay = document.getElementById('mobileMenuOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                if (overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
+                }
+            }, 300);
+        }
     }
     
     showNotification(message, type = 'info') {
