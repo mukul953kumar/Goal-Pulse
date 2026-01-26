@@ -665,13 +665,18 @@ body {
     box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
 }
 
-.progress-text {
-    font-size: 2rem;
-    font-weight: 700;
+.badge-progress .progress-text {
+    font-size: 0.75rem;
+    font-weight: 500;
     color: var(--text-muted);
     display: block;
-    margin-bottom: 1rem; /* Add space above progress text */
+    margin-top: 0.5rem; /* Add space above progress text */
     line-height: 1.2;
+    text-align: center;
+    position: static !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
 }
 
 .badge-card.unlocked .badge-progress {
