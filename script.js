@@ -631,6 +631,12 @@ class GoalPulse {
 
         this.saveData();
         this.updateUI();
+        
+        // Force update badges after UI update
+        setTimeout(() => {
+            this.updateBadges();
+        }, 100);
+        
         this.playSound('complete');
         this.showNotification('Great job! Goal marked as complete! 🔥', 'success');
     }
@@ -1043,7 +1049,10 @@ class GoalPulse {
         // Get the highest current streak across all goals
         const maxCurrentStreak = Math.max(...this.goals.map(goal => goal.currentStreak || 0), 0);
         
-        console.log('Updating badges - Max streak:', maxCurrentStreak, 'Total goals:', this.goals.length);
+        console.log('=== UPDATING BADGES ===');
+        console.log('Max current streak:', maxCurrentStreak);
+        console.log('Total goals:', this.goals.length);
+        console.log('Badge cards found:', badgeCards.length);
         
         badgeCards.forEach(card => {
             const badgeId = card.dataset.badge;
@@ -1112,6 +1121,7 @@ class GoalPulse {
                 current: currentProgress,
                 required: requiredDays,
                 percentage: progress,
+                isUnlocked: isUnlocked,
                 progressText: progressText?.textContent,
                 progressFill: progressFill?.style.width
             });
@@ -1158,6 +1168,8 @@ class GoalPulse {
                 }
             }
         });
+        
+        console.log('=== BADGES UPDATE COMPLETE ===');
     }
     
     calculateTimeBasedProgress(badgeId) {
@@ -2358,6 +2370,57 @@ class GoalPulse {
         console.log('=== END DEBUG ===');
     }
     
+    // Manual function to update consistency badges
+    updateConsistencyBadges() {
+        console.log('=== MANUAL UPDATING CONSISTENCY BADGES ===');
+        
+        // Get the highest current streak across all goals
+        const maxCurrentStreak = Math.max(...this.goals.map(goal => goal.currentStreak || 0), 0);
+        
+        console.log('Current max streak:', maxCurrentStreak);
+        console.log('Goals with streaks:', this.goals.map(g => ({ title: g.title, streak: g.currentStreak })));
+        
+        // Update all day-based badges
+        const dayBadges = ['7-day', '14-day', '30-day', '60-day', '90-day', '180-day', '365-day', '1000-day'];
+        
+        dayBadges.forEach(badgeId => {
+            const requiredDays = parseInt(badgeId.split('-')[0]);
+            const currentProgress = Math.min(maxCurrentStreak, requiredDays);
+            const progress = Math.min((currentProgress / requiredDays) * 100, 100);
+            
+            const badgeCard = document.querySelector(`[data-badge="${badgeId}"]`);
+            if (badgeCard) {
+                const progressText = badgeCard.querySelector('.progress-text') || 
+                                   badgeCard.querySelector('.badge-progress .progress-text');
+                const progressFill = badgeCard.querySelector('.progress-fill');
+                
+                if (progressText) {
+                    const text = `${currentProgress}/${requiredDays} days`;
+                    progressText.textContent = text;
+                    progressText.innerHTML = text;
+                    console.log(`Updated ${badgeId} text to: ${text}`);
+                }
+                
+                if (progressFill) {
+                    progressFill.style.width = `${progress}%`;
+                    console.log(`Updated ${badgeId} progress to: ${progress}%`);
+                }
+                
+                // Check if badge should be unlocked
+                const isUnlocked = this.goals.some(goal => goal.badges && goal.badges.includes(badgeId));
+                if (isUnlocked) {
+                    badgeCard.classList.remove('locked');
+                    badgeCard.classList.add('unlocked');
+                } else {
+                    badgeCard.classList.add('locked');
+                    badgeCard.classList.remove('unlocked');
+                }
+            }
+        });
+        
+        console.log('=== CONSISTENCY BADGES UPDATE COMPLETE ===');
+    }
+    
     showNotification(message, type = 'info') {
         // Create notification element
         const notification = document.createElement('div');
@@ -2437,3 +2500,4 @@ window.testBadges = () => goalPulse.testBadges();
 window.debugBadgeProgress = () => goalPulse.debugBadgeProgress();
 window.forceUpdateBadgeProgress = () => goalPulse.forceUpdateBadgeProgress();
 window.debugWeeklyPerformance = () => goalPulse.debugWeeklyPerformance();
+window.updateConsistencyBadges = () => goalPulse.updateConsistencyBadges();
