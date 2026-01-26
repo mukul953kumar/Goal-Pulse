@@ -666,11 +666,11 @@ body {
 }
 
 .progress-text {
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 2rem;
+    font-weight: 700;
     color: var(--text-muted);
     display: block;
-    margin-top: 0.5rem; /* Add space above progress text */
+    margin-bottom: 1rem; /* Add space above progress text */
     line-height: 1.2;
 }
 
