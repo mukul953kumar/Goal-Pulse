@@ -851,42 +851,53 @@ class GoalPulse {
     checkAndAwardBadges(goal) {
         const badges = [];
         
-        if (goal.currentStreak >= 7 && !goal.badges.includes('7-day')) {
+        // Get total completed days for this goal
+        const goalCompletedDays = Object.values(goal.progress || {}).filter(isComplete => isComplete).length;
+        
+        // Check streak badges based on total completed days (not current streak)
+        if (goalCompletedDays >= 7 && !goal.badges.includes('7-day')) {
             badges.push('7-day');
         }
         
-        if (goal.currentStreak >= 14 && !goal.badges.includes('14-day')) {
+        if (goalCompletedDays >= 14 && !goal.badges.includes('14-day')) {
             badges.push('14-day');
         }
         
-        if (goal.currentStreak >= 30 && !goal.badges.includes('30-day')) {
+        if (goalCompletedDays >= 30 && !goal.badges.includes('30-day')) {
             badges.push('30-day');
         }
         
-        if (goal.currentStreak >= 60 && !goal.badges.includes('60-day')) {
+        if (goalCompletedDays >= 60 && !goal.badges.includes('60-day')) {
             badges.push('60-day');
         }
         
-        if (goal.currentStreak >= 90 && !goal.badges.includes('90-day')) {
+        if (goalCompletedDays >= 90 && !goal.badges.includes('90-day')) {
             badges.push('90-day');
         }
         
-        if (goal.currentStreak >= 180 && !goal.badges.includes('180-day')) {
+        if (goalCompletedDays >= 180 && !goal.badges.includes('180-day')) {
             badges.push('180-day');
         }
         
-        if (goal.currentStreak >= 365 && !goal.badges.includes('365-day')) {
+        if (goalCompletedDays >= 365 && !goal.badges.includes('365-day')) {
             badges.push('365-day');
         }
         
-        if (goal.currentStreak >= 1000 && !goal.badges.includes('1000-day')) {
+        if (goalCompletedDays >= 1000 && !goal.badges.includes('1000-day')) {
             badges.push('1000-day');
         }
 
         badges.forEach(badge => {
             goal.badges.push(badge);
             this.showNotification(`🏆 Badge unlocked: ${this.getBadgeName(badge)}!`, 'success');
+            this.playSound('achievement');
+            
+            // Add celebration animation
+            this.celebrateBadgeUnlock(badge);
         });
+        
+        // Check category-specific badges
+        this.checkCategoryBadges();
     }
 
     getBadgeName(badgeId) {
@@ -1040,6 +1051,33 @@ class GoalPulse {
         this.renderCalendar();
     }
 
+    // Calculate total completed days across all goals (ignoring consistency breaks)
+    calculateTotalCompletedDays() {
+        const allCompletedDates = new Set();
+        
+        this.goals.forEach(goal => {
+            Object.entries(goal.progress || {}).forEach(([date, isComplete]) => {
+                if (isComplete) {
+                    allCompletedDates.add(date);
+                }
+            });
+        });
+        
+        return allCompletedDates.size;
+    }
+    
+    // Get max completed days for any single goal
+    getMaxGoalCompletedDays() {
+        let maxDays = 0;
+        
+        this.goals.forEach(goal => {
+            const completedDays = Object.values(goal.progress || {}).filter(isComplete => isComplete).length;
+            maxDays = Math.max(maxDays, completedDays);
+        });
+        
+        return maxDays;
+    }
+    
     updateBadges() {
         const badgesGrid = document.getElementById('badgesGrid');
         if (!badgesGrid) return;
@@ -1049,8 +1087,14 @@ class GoalPulse {
         // Get the highest current streak across all goals
         const maxCurrentStreak = Math.max(...this.goals.map(goal => goal.currentStreak || 0), 0);
         
+        // Get total completed days (ignoring consistency breaks)
+        const totalCompletedDays = this.calculateTotalCompletedDays();
+        const maxGoalCompletedDays = this.getMaxGoalCompletedDays();
+        
         console.log('=== UPDATING BADGES ===');
         console.log('Max current streak:', maxCurrentStreak);
+        console.log('Total completed days:', totalCompletedDays);
+        console.log('Max goal completed days:', maxGoalCompletedDays);
         console.log('Total goals:', this.goals.length);
         console.log('Badge cards found:', badgeCards.length);
         
@@ -1080,7 +1124,8 @@ class GoalPulse {
             if (badgeId.includes('-day')) {
                 requiredDays = parseInt(badgeId.split('-')[0]);
                 progressType = 'days';
-                currentProgress = Math.min(maxCurrentStreak, requiredDays);
+                // Use total completed days instead of current streak
+                currentProgress = Math.min(totalCompletedDays, requiredDays);
             } else if (badgeId === 'study-master') {
                 requiredDays = 50;
                 progressType = 'sessions';
@@ -2516,6 +2561,31 @@ class GoalPulse {
         console.log('=== VISUAL TEST COMPLETE ===');
     }
     
+    // Test function for total completed days badges
+    testTotalDaysBadges() {
+        console.log('=== TESTING TOTAL DAYS BADGES ===');
+        
+        const totalCompletedDays = this.calculateTotalCompletedDays();
+        const maxGoalCompletedDays = this.getMaxGoalCompletedDays();
+        
+        console.log('Total completed days:', totalCompletedDays);
+        console.log('Max goal completed days:', maxGoalCompletedDays);
+        
+        // Show all goal progress
+        this.goals.forEach((goal, index) => {
+            const completedDays = Object.values(goal.progress || {}).filter(isComplete => isComplete).length;
+            console.log(`Goal ${index + 1} (${goal.title}):`);
+            console.log('  Total completed days:', completedDays);
+            console.log('  Current streak:', goal.currentStreak);
+            console.log('  Progress dates:', Object.keys(goal.progress || {}).filter(date => goal.progress[date]));
+        });
+        
+        // Update badges with new logic
+        this.updateBadges();
+        
+        console.log('=== TEST COMPLETE ===');
+    }
+    
     showNotification(message, type = 'info') {
         // Create notification element
         const notification = document.createElement('div');
@@ -2598,3 +2668,4 @@ window.debugWeeklyPerformance = () => goalPulse.debugWeeklyPerformance();
 window.updateConsistencyBadges = () => goalPulse.updateConsistencyBadges();
 window.checkCurrentStreak = () => goalPulse.checkCurrentStreak();
 window.testBadgeVisual = () => goalPulse.testBadgeVisual();
+window.testTotalDaysBadges = () => goalPulse.testTotalDaysBadges();
