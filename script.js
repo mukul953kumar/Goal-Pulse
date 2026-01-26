@@ -1141,11 +1141,15 @@ class GoalPulse {
                     progressTextContent = `${currentProgress}/${requiredDays} goals`;
                 }
                 
-                // Force update the text
+                // Force update the text with multiple methods
                 progressText.textContent = progressTextContent;
-                
-                // Also update innerHTML to ensure it renders
                 progressText.innerHTML = progressTextContent;
+                progressText.innerText = progressTextContent;
+                
+                // Force reflow to ensure visual update
+                progressText.style.display = 'none';
+                progressText.offsetHeight; // Trigger reflow
+                progressText.style.display = '';
                 
                 console.log('Updated progress text for', badgeId, ':', progressTextContent);
             } else {
@@ -1164,6 +1168,13 @@ class GoalPulse {
                     }
                     altProgressText.textContent = progressTextContent;
                     altProgressText.innerHTML = progressTextContent;
+                    altProgressText.innerText = progressTextContent;
+                    
+                    // Force reflow
+                    altProgressText.style.display = 'none';
+                    altProgressText.offsetHeight;
+                    altProgressText.style.display = '';
+                    
                     console.log('Updated alt progress text for', badgeId, ':', progressTextContent);
                 }
             }
@@ -2421,6 +2432,90 @@ class GoalPulse {
         console.log('=== CONSISTENCY BADGES UPDATE COMPLETE ===');
     }
     
+    // Simple debug function to check current streak
+    checkCurrentStreak() {
+        console.log('=== CURRENT STREAK DEBUG ===');
+        console.log('Total goals:', this.goals.length);
+        
+        if (this.goals.length === 0) {
+            console.log('No goals found - creating test goal...');
+            this.addGoal('Test Goal', 'Test Category', 'medium');
+            console.log('Test goal created');
+        }
+        
+        this.goals.forEach((goal, index) => {
+            console.log(`Goal ${index + 1}:`);
+            console.log('  Title:', goal.title);
+            console.log('  Current Streak:', goal.currentStreak || 0);
+            console.log('  Progress:', goal.progress || {});
+            console.log('  Badges:', goal.badges || []);
+        });
+        
+        const maxStreak = Math.max(...this.goals.map(goal => goal.currentStreak || 0), 0);
+        console.log('Max streak across all goals:', maxStreak);
+        
+        // Check 7-day badge specifically
+        const badge7Day = document.querySelector('[data-badge="7-day"]');
+        if (badge7Day) {
+            const progressText = badge7Day.querySelector('.progress-text');
+            console.log('7-day badge progress text:', progressText?.textContent);
+        }
+        
+        console.log('=== END DEBUG ===');
+    }
+    
+    // Instant visual test for badge progress
+    testBadgeVisual() {
+        console.log('=== VISUAL BADGE TEST ===');
+        
+        // Test 7-day badge specifically
+        const badge7Day = document.querySelector('[data-badge="7-day"]');
+        if (badge7Day) {
+            const progressText = badge7Day.querySelector('.progress-text');
+            const progressFill = badge7Day.querySelector('.progress-fill');
+            
+            console.log('7-day badge elements found:', {
+                progressText: !!progressText,
+                progressFill: !!progressFill,
+                currentText: progressText?.textContent,
+                currentWidth: progressFill?.style.width
+            });
+            
+            // Force update with test values
+            if (progressText) {
+                progressText.textContent = 'TEST: 1/7 days';
+                progressText.innerHTML = 'TEST: 1/7 days';
+                progressText.innerText = 'TEST: 1/7 days';
+                
+                // Flash the text to make it visible
+                progressText.style.color = 'red';
+                progressText.style.fontSize = '16px';
+                progressText.style.fontWeight = 'bold';
+                
+                setTimeout(() => {
+                    progressText.style.color = '';
+                    progressText.style.fontSize = '';
+                    progressText.style.fontWeight = '';
+                }, 2000);
+                
+                console.log('Updated 7-day badge with TEST text');
+            }
+            
+            if (progressFill) {
+                progressFill.style.width = '14.28%'; // 1/7 = 14.28%
+                progressFill.style.background = 'red';
+                
+                setTimeout(() => {
+                    progressFill.style.background = '';
+                }, 2000);
+                
+                console.log('Updated 7-day progress bar');
+            }
+        }
+        
+        console.log('=== VISUAL TEST COMPLETE ===');
+    }
+    
     showNotification(message, type = 'info') {
         // Create notification element
         const notification = document.createElement('div');
@@ -2501,3 +2596,5 @@ window.debugBadgeProgress = () => goalPulse.debugBadgeProgress();
 window.forceUpdateBadgeProgress = () => goalPulse.forceUpdateBadgeProgress();
 window.debugWeeklyPerformance = () => goalPulse.debugWeeklyPerformance();
 window.updateConsistencyBadges = () => goalPulse.updateConsistencyBadges();
+window.checkCurrentStreak = () => goalPulse.checkCurrentStreak();
+window.testBadgeVisual = () => goalPulse.testBadgeVisual();
