@@ -1333,56 +1333,6 @@ class GoalPulse {
         return Math.max(...Object.values(dailyCounts), 0);
     }
     
-    checkAndAwardBadges(goal) {
-        const badges = [];
-        
-        // Check streak badges
-        if (goal.currentStreak >= 7 && !goal.badges.includes('7-day')) {
-            badges.push('7-day');
-        }
-        
-        if (goal.currentStreak >= 14 && !goal.badges.includes('14-day')) {
-            badges.push('14-day');
-        }
-        
-        if (goal.currentStreak >= 30 && !goal.badges.includes('30-day')) {
-            badges.push('30-day');
-        }
-        
-        if (goal.currentStreak >= 60 && !goal.badges.includes('60-day')) {
-            badges.push('60-day');
-        }
-        
-        if (goal.currentStreak >= 90 && !goal.badges.includes('90-day')) {
-            badges.push('90-day');
-        }
-        
-        if (goal.currentStreak >= 180 && !goal.badges.includes('180-day')) {
-            badges.push('180-day');
-        }
-        
-        if (goal.currentStreak >= 365 && !goal.badges.includes('365-day')) {
-            badges.push('365-day');
-        }
-        
-        if (goal.currentStreak >= 1000 && !goal.badges.includes('1000-day')) {
-            badges.push('1000-day');
-        }
-
-        // Award badges and show notifications
-        badges.forEach(badge => {
-            goal.badges.push(badge);
-            this.showNotification(`🏆 Badge unlocked: ${this.getBadgeName(badge)}!`, 'success');
-            this.playSound('achievement');
-            
-            // Add celebration animation
-            this.celebrateBadgeUnlock(badge);
-        });
-        
-        // Check category-specific badges
-        this.checkCategoryBadges();
-    }
-    
     checkCategoryBadges() {
         const categoryStats = {};
         
