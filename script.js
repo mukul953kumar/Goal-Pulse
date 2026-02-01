@@ -2685,6 +2685,16 @@ class GoalPulse {
             }, 300);
         }, 3000);
     }
+    
+    // Check all goals for badges on app initialization
+    checkAllGoalsForBadges() {
+        console.log('🔍 Checking all goals for badges...');
+        this.goals.forEach(goal => {
+            this.checkAndAwardBadges(goal);
+        });
+        this.saveData();
+        this.updateBadges();
+    }
 }
 
 // Add notification animations to the page
@@ -2717,8 +2727,14 @@ document.head.appendChild(style);
 // Initialize the app
 const goalPulse = new GoalPulse();
 
+// Check for badges after app initialization
+setTimeout(() => {
+    goalPulse.checkAllGoalsForBadges();
+}, 1000);
+
 // Make test functions available globally
 window.testBadges = () => goalPulse.testBadges();
+window.checkAllBadges = () => goalPulse.checkAllGoalsForBadges();
 window.debugBadgeProgress = () => goalPulse.debugBadgeProgress();
 window.forceUpdateBadgeProgress = () => goalPulse.forceUpdateBadgeProgress();
 window.debugWeeklyPerformance = () => goalPulse.debugWeeklyPerformance();
