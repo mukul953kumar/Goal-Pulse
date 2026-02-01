@@ -854,8 +854,21 @@ class GoalPulse {
         // Get total completed days for this goal
         const goalCompletedDays = Object.values(goal.progress || {}).filter(isComplete => isComplete).length;
         
+        // Debug logging
+        console.log(`Badge check for goal: ${goal.title}`);
+        console.log(`Total completed days: ${goalCompletedDays}`);
+        console.log(`Current streak: ${goal.currentStreak}`);
+        console.log(`Existing badges: ${goal.badges.join(', ')}`);
+        
         // Check streak badges based on total completed days (not current streak)
         if (goalCompletedDays >= 7 && !goal.badges.includes('7-day')) {
+            console.log('✅ 7-day badge should be awarded (total days)!');
+            badges.push('7-day');
+        }
+        
+        // Also check current streak badges
+        if (goal.currentStreak >= 7 && !goal.badges.includes('7-day')) {
+            console.log('✅ 7-day badge should be awarded (current streak)!');
             badges.push('7-day');
         }
         
@@ -887,7 +900,10 @@ class GoalPulse {
             badges.push('1000-day');
         }
 
+        console.log(`Badges to award: ${badges.length > 0 ? badges.join(', ') : 'None'}`);
+        
         badges.forEach(badge => {
+            console.log(`🏆 Awarding badge: ${badge}`);
             goal.badges.push(badge);
             this.showNotification(`🏆 Badge unlocked: ${this.getBadgeName(badge)}!`, 'success');
             this.playSound('achievement');
