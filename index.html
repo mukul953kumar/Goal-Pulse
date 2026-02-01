@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google-site-verification" content="lyiefUkHwt3ZVzZFzZW2SaNIkXnhUsEhDL01o51s_HA" />
-    <title>GoalPulse - Personal Goal & Streak Tracker</title>
+    <title>StreakAura - Personal Goal & Streak Tracker</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -19,7 +19,7 @@
                 <div class="logo">
                     <span class="logo-icon"><img src="logo.png" alt="logo" style="width: 50px; height: 50px;"></span>
                     <div>
-                        <h1>GoalPulse</h1>
+                        <h1>StreakAura</h1>
                         <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;">Track your goals and don't break your streak</p>
                     </div>
                 </div>
@@ -29,24 +29,24 @@
                     </div>
                     <div class="streak-info">
                         <span class="streak-freeze-count">❄️ <span id="freezeCount">3</span></span>
-                        <button class="freeze-btn-small" id="useFreezeBtn" onclick="goalPulse.useStreakFreeze()" title="Use Streak Freeze">
+                        <button class="freeze-btn-small" id="useFreezeBtn" onclick="streakaura.useStreakFreeze()" title="Use Streak Freeze">
                             Use Freeze
                         </button>
                     </div>
                     <div class="control-buttons">
-                        <button class="control-btn" id="exportBtn" onclick="goalPulse.exportData()" title="Export Data">
+                        <button class="control-btn" id="exportBtn" onclick="streakaura.exportData()" title="Export Data">
                             📊
                         </button>
-                        <button class="control-btn" id="addGoalBtn" onclick="goalPulse.showAddGoalModal()" title="Add Goal">
+                        <button class="control-btn" id="addGoalBtn" onclick="streakaura.showAddGoalModal()" title="Add Goal">
                             ➕
                         </button>
-                        <button class="control-btn" id="calendarBtn" onclick="goalPulse.showCalendar()" title="Calendar View">
+                        <button class="control-btn" id="calendarBtn" onclick="streakaura.showCalendar()" title="Calendar View">
                             📅
                         </button>
                         
                     </div>
                     <!-- Mobile Menu Toggle -->
-                    <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="goalPulse.toggleMobileMenu()">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="streakaura.toggleMobileMenu()">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -58,14 +58,14 @@
                 <div class="mobile-menu-content">
                     <div class="mobile-menu-header">
                         <span class="mobile-menu-date" id="mobileMenuDate"></span>
-                        <button class="mobile-menu-close" onclick="goalPulse.toggleMobileMenu()">✕</button>
+                        <button class="mobile-menu-close" onclick="streakaura.toggleMobileMenu()">✕</button>
                     </div>
                     <div class="mobile-menu-body">
                         <div class="mobile-menu-section">
                             <h4>Streak Info</h4>
                             <div class="mobile-streak-info">
                                 <span class="streak-freeze-count">❄️ <span id="mobileFreezeCount">3</span></span>
-                                <button class="freeze-btn-small" onclick="goalPulse.useStreakFreeze()">
+                                <button class="freeze-btn-small" onclick="streakaura.useStreakFreeze()">
                                     Use Freeze
                                 </button>
                             </div>
@@ -73,13 +73,13 @@
                         <div class="mobile-menu-section">
                             <h4>Actions</h4>
                             <div class="mobile-menu-actions">
-                                <button class="mobile-menu-btn" onclick="goalPulse.exportData()">
+                                <button class="mobile-menu-btn" onclick="streakaura.exportData()">
                                     📊 Export Data
                                 </button>
-                                <button class="mobile-menu-btn" onclick="goalPulse.showAddGoalModal()">
+                                <button class="mobile-menu-btn" onclick="streakaura.showAddGoalModal()">
                                     ➕ Add Goal
                                 </button>
-                                <button class="mobile-menu-btn" onclick="goalPulse.showCalendar()">
+                                <button class="mobile-menu-btn" onclick="streakaura.showCalendar()">
                                     📅 Calendar View
                                 </button>
                             </div>
@@ -89,7 +89,7 @@
             </div>
             </div>
             <!-- Mobile Menu Overlay -->
-            <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="goalPulse.closeMobileMenu()"></div>
+            <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="streakaura.closeMobileMenu()"></div>
             <div class="motivation-quote">
                 <p id="motivationText">"Success is the sum of small efforts repeated day in and day out."</p>
             </div>
@@ -254,7 +254,7 @@
                     <div class="empty-icon">🎯</div>
                     <h3>No goals yet!</h3>
                     <p>Start your journey by adding your first goal.</p>
-                    <button class="btn btn-primary" onclick="goalPulse.showAddGoalModal()">
+                    <button class="btn btn-primary" onclick="streakaura.showAddGoalModal()">
                         Add Your First Goal
                     </button>
                 </div>
@@ -487,7 +487,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 GoalPulse. Built with passion for consistency and growth. 🚀</p>
+                <p>&copy; 2026 StreakAura. Built with passion for consistency and growth. 🚀</p>
             </div>
         </div>
     </footer>

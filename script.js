@@ -2725,20 +2725,20 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Initialize the app
-const goalPulse = new GoalPulse();
+const streakaura = new GoalPulse();
 
 // Check for badges after app initialization
 setTimeout(() => {
-    goalPulse.checkAllGoalsForBadges();
+    streakaura.checkAllGoalsForBadges();
 }, 1000);
 
 // Make test functions available globally
-window.testBadges = () => goalPulse.testBadges();
-window.checkAllBadges = () => goalPulse.checkAllGoalsForBadges();
-window.debugBadgeProgress = () => goalPulse.debugBadgeProgress();
-window.forceUpdateBadgeProgress = () => goalPulse.forceUpdateBadgeProgress();
-window.debugWeeklyPerformance = () => goalPulse.debugWeeklyPerformance();
-window.updateConsistencyBadges = () => goalPulse.updateConsistencyBadges();
-window.checkCurrentStreak = () => goalPulse.checkCurrentStreak();
-window.testBadgeVisual = () => goalPulse.testBadgeVisual();
-window.testTotalDaysBadges = () => goalPulse.testTotalDaysBadges();
+window.testBadges = () => streakaura.testBadges();
+window.checkAllBadges = () => streakaura.checkAllGoalsForBadges();
+window.debugBadgeProgress = () => streakaura.debugBadgeProgress();
+window.forceUpdateBadgeProgress = () => streakaura.forceUpdateBadgeProgress();
+window.debugWeeklyPerformance = () => streakaura.debugWeeklyPerformance();
+window.updateConsistencyBadges = () => streakaura.updateConsistencyBadges();
+window.checkCurrentStreak = () => streakaura.checkCurrentStreak();
+window.testBadgeVisual = () => streakaura.testBadgeVisual();
+window.testTotalDaysBadges = () => streakaura.testTotalDaysBadges();
