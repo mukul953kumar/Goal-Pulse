@@ -255,8 +255,8 @@ class GoalPulse {
                 calendarGrid.appendChild(emptyDay);
             }
             
-            // Add actual days of the month (max 30 days as requested)
-            for (let day = 0; day < Math.min(30, monthData.days.length); day++) {
+            // Add actual days of the month (support all days including 31)
+            for (let day = 0; day < monthData.days.length; day++) {
                 const dayData = monthData.days[day];
                 const dayElement = document.createElement('div');
                 dayElement.className = 'heatmap-day';
@@ -1066,6 +1066,33 @@ class GoalPulse {
         // For now, just show current month
         this.renderCalendar();
     }
+    
+    showCalendar() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📅 Calendar View</h2>
+                    <button class="close-btn" onclick="this.closest('.modal').remove()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="calendar-navigation">
+                        <button class="btn btn-secondary" id="prevMonth">← Previous</button>
+                        <h3 id="currentMonth"></h3>
+                        <button class="btn btn-secondary" id="nextMonth">Next →</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        this.renderCalendar();
+        this.playSound('button');
+    }
 
     // Calculate total completed days across all goals (ignoring consistency breaks)
     calculateTotalCompletedDays() {
@@ -1604,7 +1631,7 @@ class GoalPulse {
                     </span>
                 </div>
                 <div class="goal-actions">
-                    <button class="btn btn-danger btn-sm" onclick="goalPulse.deleteGoal('${goal.id}')">
+                    <button class="btn btn-danger btn-sm" onclick="streakaura.deleteGoal('${goal.id}')">
                         🗑️
                     </button>
                 </div>
