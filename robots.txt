@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://streakaura.netlify.app/sitemap.xml
