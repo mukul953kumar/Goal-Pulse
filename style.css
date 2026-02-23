@@ -63,8 +63,11 @@ body {
     gap: 0.4rem;
 }
 
-.logo-icon {
-    font-size: 2rem;
+.logo-icon img{
+    width: 50%;
+    height: 50%;
+    background-color: transparent;
+
     
  
 }
@@ -151,6 +154,11 @@ body {
     margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
+}
+.consistency-heatmap:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), 0 0 40px rgba(79, 70, 229, 0.1);
+    border-color: var(--neon-primary);
 }
 
 .consistency-heatmap h3 {
