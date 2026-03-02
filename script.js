@@ -2808,6 +2808,20 @@ setTimeout(() => {
     streakaura.checkAllGoalsForBadges();
 }, 1000);
 
+// Also check badges every 30 seconds as fallback
+setInterval(() => {
+    streakaura.checkAllGoalsForBadges();
+}, 30000);
+
+// Add keyboard shortcut for badge check (Ctrl+B)
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'b') {
+        e.preventDefault();
+        console.log('🏆 Manual badge check triggered!');
+        streakaura.checkAllGoalsForBadges();
+    }
+});
+
 // Make test functions available globally
 window.testBadges = () => streakaura.testBadges();
 window.checkAllBadges = () => streakaura.checkAllGoalsForBadges();
