@@ -873,30 +873,79 @@ class GoalPulse {
         }
         
         if (goalCompletedDays >= 14 && !goal.badges.includes('14-day')) {
+            console.log('✅ 14-day badge should be awarded (total days)!');
+            badges.push('14-day');
+        }
+        
+        // Also check current streak for 14-day badge
+        if (goal.currentStreak >= 14 && !goal.badges.includes('14-day')) {
+            console.log('✅ 14-day badge should be awarded (current streak)!');
             badges.push('14-day');
         }
         
         if (goalCompletedDays >= 30 && !goal.badges.includes('30-day')) {
+            console.log('✅ 30-day badge should be awarded (total days)!');
+            badges.push('30-day');
+        }
+        
+        // Also check current streak for 30-day badge
+        if (goal.currentStreak >= 30 && !goal.badges.includes('30-day')) {
+            console.log('✅ 30-day badge should be awarded (current streak)!');
             badges.push('30-day');
         }
         
         if (goalCompletedDays >= 60 && !goal.badges.includes('60-day')) {
+            console.log('✅ 60-day badge should be awarded (total days)!');
+            badges.push('60-day');
+        }
+        
+        // Also check current streak for 60-day badge
+        if (goal.currentStreak >= 60 && !goal.badges.includes('60-day')) {
+            console.log('✅ 60-day badge should be awarded (current streak)!');
             badges.push('60-day');
         }
         
         if (goalCompletedDays >= 90 && !goal.badges.includes('90-day')) {
+            console.log('✅ 90-day badge should be awarded (total days)!');
+            badges.push('90-day');
+        }
+        
+        // Also check current streak for 90-day badge
+        if (goal.currentStreak >= 90 && !goal.badges.includes('90-day')) {
+            console.log('✅ 90-day badge should be awarded (current streak)!');
             badges.push('90-day');
         }
         
         if (goalCompletedDays >= 180 && !goal.badges.includes('180-day')) {
+            console.log('✅ 180-day badge should be awarded (total days)!');
+            badges.push('180-day');
+        }
+        
+        // Also check current streak for 180-day badge
+        if (goal.currentStreak >= 180 && !goal.badges.includes('180-day')) {
+            console.log('✅ 180-day badge should be awarded (current streak)!');
             badges.push('180-day');
         }
         
         if (goalCompletedDays >= 365 && !goal.badges.includes('365-day')) {
+            console.log('✅ 365-day badge should be awarded (total days)!');
+            badges.push('365-day');
+        }
+        
+        // Also check current streak for 365-day badge
+        if (goal.currentStreak >= 365 && !goal.badges.includes('365-day')) {
+            console.log('✅ 365-day badge should be awarded (current streak)!');
             badges.push('365-day');
         }
         
         if (goalCompletedDays >= 1000 && !goal.badges.includes('1000-day')) {
+            console.log('✅ 1000-day badge should be awarded (total days)!');
+            badges.push('1000-day');
+        }
+        
+        // Also check current streak for 1000-day badge
+        if (goal.currentStreak >= 1000 && !goal.badges.includes('1000-day')) {
+            console.log('✅ 1000-day badge should be awarded (current streak)!');
             badges.push('1000-day');
         }
 
@@ -2762,6 +2811,53 @@ setTimeout(() => {
 // Make test functions available globally
 window.testBadges = () => streakaura.testBadges();
 window.checkAllBadges = () => streakaura.checkAllGoalsForBadges();
+window.force14DayBadge = () => {
+    console.log('🔥 Forcing 14-day badge check...');
+    streakaura.goals.forEach(goal => {
+        console.log(`Checking goal: ${goal.title}`);
+        console.log(`Current streak: ${goal.currentStreak}`);
+        console.log(`Total completed days: ${Object.values(goal.progress || {}).filter(isComplete => isComplete).length}`);
+        console.log(`Existing badges: ${goal.badges.join(', ')}`);
+        streakaura.checkAndAwardBadges(goal);
+    });
+    streakaura.saveData();
+    streakaura.updateBadges();
+    console.log('✅ 14-day badge check complete!');
+};
+
+window.testAllBadges = () => {
+    console.log('🏆 Testing ALL badges...');
+    const badgeTests = [
+        { name: '7-Day', streak: 7, total: 7 },
+        { name: '14-Day', streak: 14, total: 14 },
+        { name: '30-Day', streak: 30, total: 30 },
+        { name: '60-Day', streak: 60, total: 60 },
+        { name: '90-Day', streak: 90, total: 90 },
+        { name: '180-Day', streak: 180, total: 180 },
+        { name: '365-Day', streak: 365, total: 365 },
+        { name: '1000-Day', streak: 1000, total: 1000 }
+    ];
+    
+    streakaura.goals.forEach(goal => {
+        console.log(`\n📊 Testing badges for: ${goal.title}`);
+        console.log(`Current streak: ${goal.currentStreak}`);
+        const totalDays = Object.values(goal.progress || {}).filter(isComplete => isComplete).length;
+        console.log(`Total completed days: ${totalDays}`);
+        console.log(`Existing badges: ${goal.badges.join(', ')}`);
+        
+        badgeTests.forEach(badge => {
+            if (totalDays >= badge.total || goal.currentStreak >= badge.streak) {
+                console.log(`✅ ${badge.name} badge SHOULD be unlocked!`);
+            } else {
+                console.log(`❌ ${badge.name} badge - Need ${badge.total} total days OR ${badge.streak} streak (have ${totalDays}/${goal.currentStreak})`);
+            }
+        });
+    });
+    
+    console.log('\n🔄 Running actual badge check...');
+    streakaura.checkAllGoalsForBadges();
+    console.log('✅ All badges test complete!');
+};
 window.debugBadgeProgress = () => streakaura.debugBadgeProgress();
 window.forceUpdateBadgeProgress = () => streakaura.forceUpdateBadgeProgress();
 window.debugWeeklyPerformance = () => streakaura.debugWeeklyPerformance();
