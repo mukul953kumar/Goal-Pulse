@@ -8,12 +8,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google-site-verification" content="lyiefUkHwt3ZVzZFzZW2SaNIkXnhUsEhDL01o51s_HA" />
       <link rel="icon" type="image/png" href="logo1.png">
-    <title>StreakAura - Personal Goal & Streak Tracker</title>  
+    <title>StreakAura - Personal Goal & Streak Tracker</title>
+    <meta property="og:title" content="StreakAura - Personal Goal & Streak Tracker">
+    <meta name="twitter:title" content="StreakAura - Personal Goal & Streak Tracker">
+    <meta name="application-name" content="StreakAura">
+    <meta name="apple-mobile-web-app-title" content="StreakAura">  
 <meta name="description" content="Track your habits daily with Streak Aura and build consistency.">
 
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20240309">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js?v=20240309"></script>
     <script type="application/ld+json">
        {
   "@context": "https://schema.org",
@@ -50,9 +55,6 @@
                         </button>
                         <button class="control-btn" id="calendarBtn" onclick="streakaura.showCalendar()" title="Calendar View">
                             📅
-                        </button>
-                        <button class="control-btn" id="badgeCheckBtn" onclick="checkAllBadges()" title="Check Badges">
-                            🏆
                         </button>
                     </div>
                     <!-- Mobile Menu Toggle -->

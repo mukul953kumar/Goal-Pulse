@@ -1,0 +1,4 @@
+# Only redirect specific routes, not all files
+/analytics    /index.html   200
+/dashboard    /index.html   200
+/profile      /index.html   200
